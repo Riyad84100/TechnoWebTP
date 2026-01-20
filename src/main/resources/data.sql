@@ -31,3 +31,11 @@ INSERT INTO MEDICAMENT (NOM, CATEGORIE_CODE, QUANTITE_PAR_UNITE, PRIX_UNITAIRE, 
 INSERT INTO MEDICAMENT (NOM, CATEGORIE_CODE, QUANTITE_PAR_UNITE, PRIX_UNITAIRE, UNITES_EN_STOCK, UNITES_COMMANDEES, NIVEAU_DE_REAPPRO, INDISPONIBLE, imageURL) VALUES
 ('Lévofloxacine 500mg', 3, 'Boîte de 7 comprimés', 15.80, 160, 0, 18, true, 'https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=400'),
 ('Clindamycine 300mg', 3, 'Boîte de 16 gélules', 13.20, 140, 0, 16, true, 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400');
+-- Insert a Dispensary
+INSERT INTO DISPENSAIRE (CODE, NOM, VILLE, REGION, PAYS) VALUES ('D001', 'Pharmacie Centrale', 'Lyon', 'Auvergne-Rhône-Alpes', 'France');
+
+-- Insert a Command
+INSERT INTO COMMANDE (SAISIE_LE, DESTINATAIRE, DISPENSAIRE_CODE) VALUES ('2026-01-15', 'Jean Dupont', 'D001');
+
+-- Insert a Order Line (Assuming Medicament with reference 1 exists)
+INSERT INTO LIGNE (QUANTITE, COMMANDE_NUMERO, MEDICAMENT_REFERENCE) VALUES (5, 1, 1);
