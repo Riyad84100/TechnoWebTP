@@ -1,27 +1,24 @@
 package pharmacie.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"COMMANDE_NUMERO", "MEDICAMENT_REFERENCE"})})
 public class Ligne {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Setter(AccessLevel.NONE)
     private Integer id;
-
-    @Min(1)
-    private Integer quantite;
-
-    @ManyToOne
-    @JoinColumn(name = "commande_numero")
+    private short quantite;
+    @ManyToOne(optional = false)
     private Commande commande;
-
-    @ManyToOne
-    @JoinColumn(name = "medicament_reference")
+    @ManyToOne(optional = false)
     private Medicament medicament;
 }

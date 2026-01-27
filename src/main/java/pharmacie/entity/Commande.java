@@ -3,45 +3,65 @@ package pharmacie.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE) // la clé est auto-générée par la BD, On ne veut pas de "setter"
     private Integer numero;
 
-    @NotNull
-    private LocalDate saisieLe;
+    @NotNull(message = "La date de saisie est obligatoire")
+    @PastOrPresent(message = "La date de saisie ne peut pas être dans le futur")
+    @Column(nullable = false)
+    private Date saisieLe;
 
-    private LocalDate envoyeeLe;
+    @PastOrPresent(message = "La date d'envoi ne peut pas être dans le futur")
+    @Column(nullable = true)
+    private Date envoyeeLe;
 
-    @DecimalMin("0.0")
+    @NotNull(message = "Le port est obligatoire")
+    @DecimalMin(value = "0.0", message = "Le port ne peut pas être négatif")
+    @Column(nullable = false)
     private BigDecimal port;
 
-    @DecimalMin("0.0")
-    @DecimalMax("100.0")
+    @NotBlank(message = "Le destinataire est obligatoire")
+    @Size(min = 2, max = 255, message = "Le destinataire doit contenir entre 2 et 255 caractères")
+    @Column(nullable = false)
+    private String distinataire;
+
+    @NotNull(message = "La remise est obligatoire")
+    @DecimalMin(value = "0.0", message = "La remise ne peut pas être négative")
+    @DecimalMax(value = "100.0", message = "La remise ne peut pas dépasser 100")
+    @Column(nullable = false)
     private BigDecimal remise;
 
-    @Size(max = 40)
-    private String destinataire;
+    @OneToMany(
+        mappedBy = "commande",
+        cascade = CascadeType.REMOVE
+    )
+    @ToString.Exclude
+    private List<Ligne> lignes;
 
-    @Size(max = 60)
-    private String adresse;
-
-    @Size(max = 15)
-    private String ville;
-
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "dispensaire_code")
+    @ToString.Exclude
     private Dispensaire dispensaire;
 
-    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ligne> lignes;
+    @Embedded
+    private AdressePostale adresse;
+
+
+
+
+
+
 }
